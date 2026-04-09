@@ -17,14 +17,11 @@ router.post("/upload", upload.single("resume"), async (req, res) => {
       req.body.jd?.trim() ||
       "Software Engineering Intern role";
 
-    // Read PDF
     const dataBuffer = fs.readFileSync(req.file.path);
     const pdfData = await pdfParse(dataBuffer);
 
-    // AI Analysis
     const analysis = await analyzeResume(pdfData.text, jd);
 
-    // Cleanup
     fs.unlinkSync(req.file.path);
 
     return res.json(analysis);
