@@ -15,7 +15,7 @@ body {
 .card {
   width: 800px;
   max-width: 95%;
-  background: rgba(30, 41, 59, 0.9);
+  background: rgba(30, 41, 59, 0.95);
   padding: 30px;
   border-radius: 20px;
   backdrop-filter: blur(12px);
@@ -30,7 +30,8 @@ p {
   color: #94a3b8;
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   margin-top: 15px;
   padding: 12px;
@@ -97,4 +98,10 @@ li {
   background: #0f172a;
   padding: 15px;
   border-radius: 10px;
+}
+
+.placeholder {
+  margin-top: 20px;
+  color: #94a3b8;
+  text-align: center;
 }
