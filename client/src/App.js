@@ -27,7 +27,7 @@ function App() {
 
       const data = await res.json();
 
-      console.log("API RESPONSE:", data); // 🔥 debug
+      console.log("API RESPONSE:", data);
 
       setResult(data);
       setLoading(false);
@@ -62,7 +62,6 @@ function App() {
 
         {result && (
           <div className="result">
-            {/* 🔥 FINAL SCORE FIX */}
             <h2>
               🎯 Match Score:{" "}
               {(result.match_score || result.score || "N/A")}/100
