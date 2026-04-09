@@ -1,71 +1,56 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  font-family: Arial;
+  background: #0f172a;
   color: white;
 }
 
-.container {
-  min-height: 100vh;
+.app {
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 40px;
 }
 
 .card {
+  width: 600px;
   background: #1e293b;
   padding: 30px;
   border-radius: 16px;
-  width: 500px;
-  max-width: 90%;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
   text-align: center;
 }
 
-h1 {
-  margin-bottom: 10px;
-}
-
-p {
-  margin-bottom: 20px;
-  color: #cbd5f5;
-}
-
-input {
-  margin: 10px 0;
-}
-
-textarea {
+input, textarea {
   width: 100%;
-  height: 120px;
   margin: 10px 0;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
-  outline: none;
-  resize: none;
 }
 
 button {
   width: 100%;
   padding: 12px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
   border: none;
   border-radius: 10px;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
   color: white;
-  font-size: 16px;
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+.score-box {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  border-radius: 12px;
 }
 
-.result {
+.section {
   margin-top: 20px;
   text-align: left;
 }
 
-ul {
-  padding-left: 20px;
+.roadmap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
 }
