@@ -26,6 +26,10 @@ function App() {
       );
 
       const data = await res.json();
+
+      // 🔥 DEBUG (important)
+      console.log("API RESPONSE:", data);
+
       setResult(data);
       setLoading(false);
     } catch (err) {
@@ -58,32 +62,38 @@ function App() {
 
         {result && (
           <div className="result">
-            <h2>🎯 Match Score: {result.match_score}/100</h2>
+            <h2>
+              🎯 Match Score:{" "}
+              {result.match_score !== undefined
+                ? result.match_score
+                : "N/A"}
+              /100
+            </h2>
 
             <h3>❌ Missing Skills</h3>
             <ul>
-              {result.missing_skills?.map((item, i) => (
+              {(result.missing_skills || []).map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
 
             <h3>✅ Strengths</h3>
             <ul>
-              {result.strengths?.map((item, i) => (
+              {(result.strengths || []).map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
 
             <h3>⚠ Weaknesses</h3>
             <ul>
-              {result.weaknesses?.map((item, i) => (
+              {(result.weaknesses || []).map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
 
             <h3>🚀 Suggestions</h3>
             <ul>
-              {result.suggestions?.map((item, i) => (
+              {(result.suggestions || []).map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
