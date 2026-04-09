@@ -8,7 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
-    if (!file) return alert("Upload resume");
+    if (!file) return alert("Please upload a resume");
 
     const formData = new FormData();
     formData.append("resume", file);
@@ -26,11 +26,14 @@ function App() {
       );
 
       const data = await res.json();
+      console.log("API RESPONSE:", data);
+
       setResult(data);
       setLoading(false);
     } catch (err) {
       console.error(err);
       setLoading(false);
+      alert("Something went wrong");
     }
   };
 
@@ -40,21 +43,28 @@ function App() {
         <h1>🚀 ResumeForge AI</h1>
         <p>Get shortlisted, not just reviewed</p>
 
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        {/* FILE INPUT */}
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
 
+        {/* JD INPUT */}
         <textarea
           placeholder="Paste Job Description here..."
           value={jd}
           onChange={(e) => setJd(e.target.value)}
         />
 
+        {/* BUTTON */}
         <button onClick={handleUpload} disabled={loading}>
           {loading ? "Analyzing..." : "Analyze Resume"}
         </button>
 
+        {/* RESULTS */}
         {result && (
           <>
-            {/* 🎯 SCORE */}
+            {/* SCORE */}
             <div className="score-box">
               <h2>
                 🎯 {result.match_score || result.score || "N/A"}/100
@@ -62,62 +72,74 @@ function App() {
               <p>Match Score</p>
             </div>
 
-            {/* 📊 GAP */}
-            <div className="section">
-              <h3>📊 Gap Analysis</h3>
-              <ul>
-                {(result.missing_skills || []).map((item, i) => (
-                  <li key={i}>❌ {item}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 🚀 ROADMAP */}
-            {result.roadmap && (
+            {/* GAP ANALYSIS */}
+            {result.missing_skills?.length > 0 && (
               <div className="section">
-                <h3>🚀 Roadmap</h3>
-
-                <div className="roadmap">
-                  <div>
-                    <h4>Week 1–2</h4>
-                    {(result.roadmap.week_1_2 || []).map((i, idx) => (
-                      <p key={idx}>• {i}</p>
-                    ))}
-                  </div>
-
-                  <div>
-                    <h4>Week 3–4</h4>
-                    {(result.roadmap.week_3_4 || []).map((i, idx) => (
-                      <p key={idx}>• {i}</p>
-                    ))}
-                  </div>
-
-                  <div>
-                    <h4>Month 2</h4>
-                    {(result.roadmap.month_2 || []).map((i, idx) => (
-                      <p key={idx}>• {i}</p>
-                    ))}
-                  </div>
-
-                  <div>
-                    <h4>Month 3</h4>
-                    {(result.roadmap.month_3 || []).map((i, idx) => (
-                      <p key={idx}>• {i}</p>
-                    ))}
-                  </div>
-                </div>
+                <h3>📊 Gap Analysis</h3>
+                <ul>
+                  {result.missing_skills.map((item, i) => (
+                    <li key={i}>❌ {item}</li>
+                  ))}
+                </ul>
               </div>
             )}
 
-            {/* ⚡ ACTIONS */}
-            <div className="section">
-              <h3>⚡ Priority Actions</h3>
-              <ul>
-                {(result.priority_actions || []).map((item, i) => (
-                  <li key={i}>🔥 {item}</li>
-                ))}
-              </ul>
-            </div>
+            {/* STRENGTHS */}
+            {result.strengths?.length > 0 && (
+              <div className="section">
+                <h3>✅ Strengths</h3>
+                <ul>
+                  {result.strengths.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* WEAKNESSES */}
+            {result.weaknesses?.length > 0 && (
+              <div className="section">
+                <h3>⚠ Weaknesses</h3>
+                <ul>
+                  {result.weaknesses.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* ROADMAP */}
+            {result.roadmap ? (
+              <div className="section">
+                <h3>🚀 Roadmap</h3>
+                <div className="roadmap">
+                  {Object.entries(result.roadmap).map(([key, val]) => (
+                    <div key={key}>
+                      <h4>{key.replaceAll("_", " ")}</h4>
+                      {val.map((i, idx) => (
+                        <p key={idx}>• {i}</p>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="placeholder">
+                Roadmap will appear after backend upgrade 🚀
+              </p>
+            )}
+
+            {/* PRIORITY */}
+            {result.priority_actions?.length > 0 && (
+              <div className="section">
+                <h3>⚡ Priority Actions</h3>
+                <ul>
+                  {result.priority_actions.map((item, i) => (
+                    <li key={i}>🔥 {item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </>
         )}
       </div>
