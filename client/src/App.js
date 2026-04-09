@@ -8,7 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
-    if (!file) return alert("Please upload a resume");
+    if (!file) return alert("Upload resume");
 
     const formData = new FormData();
     formData.append("resume", file);
@@ -26,28 +26,21 @@ function App() {
       );
 
       const data = await res.json();
-
-      console.log("API RESPONSE:", data);
-
       setResult(data);
       setLoading(false);
     } catch (err) {
       console.error(err);
       setLoading(false);
-      alert("Something went wrong");
     }
   };
 
   return (
-    <div className="container">
+    <div className="app">
       <div className="card">
         <h1>🚀 ResumeForge AI</h1>
-        <p>Match your resume with real job descriptions</p>
+        <p>Get shortlisted, not just reviewed</p>
 
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-        />
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
         <textarea
           placeholder="Paste Job Description here..."
@@ -55,46 +48,77 @@ function App() {
           onChange={(e) => setJd(e.target.value)}
         />
 
-        {/* 🔥 FIXED BUTTON */}
         <button onClick={handleUpload} disabled={loading}>
           {loading ? "Analyzing..." : "Analyze Resume"}
         </button>
 
         {result && (
-          <div className="result">
-            <h2>
-              🎯 Match Score:{" "}
-              {(result.match_score || result.score || "N/A")}/100
-            </h2>
+          <>
+            {/* 🎯 SCORE */}
+            <div className="score-box">
+              <h2>
+                🎯 {result.match_score || result.score || "N/A"}/100
+              </h2>
+              <p>Match Score</p>
+            </div>
 
-            <h3>❌ Missing Skills</h3>
-            <ul>
-              {(result.missing_skills || []).map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
+            {/* 📊 GAP */}
+            <div className="section">
+              <h3>📊 Gap Analysis</h3>
+              <ul>
+                {(result.missing_skills || []).map((item, i) => (
+                  <li key={i}>❌ {item}</li>
+                ))}
+              </ul>
+            </div>
 
-            <h3>✅ Strengths</h3>
-            <ul>
-              {(result.strengths || []).map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
+            {/* 🚀 ROADMAP */}
+            {result.roadmap && (
+              <div className="section">
+                <h3>🚀 Roadmap</h3>
 
-            <h3>⚠ Weaknesses</h3>
-            <ul>
-              {(result.weaknesses || []).map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
+                <div className="roadmap">
+                  <div>
+                    <h4>Week 1–2</h4>
+                    {(result.roadmap.week_1_2 || []).map((i, idx) => (
+                      <p key={idx}>• {i}</p>
+                    ))}
+                  </div>
 
-            <h3>🚀 Suggestions</h3>
-            <ul>
-              {(result.suggestions || []).map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </div>
+                  <div>
+                    <h4>Week 3–4</h4>
+                    {(result.roadmap.week_3_4 || []).map((i, idx) => (
+                      <p key={idx}>• {i}</p>
+                    ))}
+                  </div>
+
+                  <div>
+                    <h4>Month 2</h4>
+                    {(result.roadmap.month_2 || []).map((i, idx) => (
+                      <p key={idx}>• {i}</p>
+                    ))}
+                  </div>
+
+                  <div>
+                    <h4>Month 3</h4>
+                    {(result.roadmap.month_3 || []).map((i, idx) => (
+                      <p key={idx}>• {i}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ⚡ ACTIONS */}
+            <div className="section">
+              <h3>⚡ Priority Actions</h3>
+              <ul>
+                {(result.priority_actions || []).map((item, i) => (
+                  <li key={i}>🔥 {item}</li>
+                ))}
+              </ul>
+            </div>
+          </>
         )}
       </div>
     </div>
