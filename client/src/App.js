@@ -1,150 +1,88 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 function App() {
   const [file, setFile] = useState(null);
+  const [jd, setJd] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
-    if (!file) return alert("Please select a file");
+    if (!file) return alert("Upload resume");
 
     const formData = new FormData();
     formData.append("resume", file);
+    formData.append("jd", jd);
 
     try {
       setLoading(true);
-      setResult(null);
-
-      const res = await fetch("https://resumeforge-ai-09n7.onrender.com/api/upload", {
-        method: "POST",
-        body: formData
-      });
+      const res = await fetch(
+        "https://resumeforge-ai-09n7.onrender.com/api/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
       setResult(data);
-
-    } catch (error) {
-      console.error(error);
-      alert("Error uploading file");
-    } finally {
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
       setLoading(false);
     }
   };
 
-  const getScoreColor = (score) => {
-    if (score > 80) return "#22c55e";
-    if (score > 60) return "#facc15";
-    return "#ef4444";
-  };
-
-  const Progress = ({ label, value, max }) => {
-    const percent = (value / max) * 100;
-
-    return (
-      <div style={{ marginBottom: "12px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span>{label}</span>
-          <span>{value}/{max}</span>
-        </div>
-
-        <div style={{
-          height: "8px",
-          background: "#374151",
-          borderRadius: "5px",
-          overflow: "hidden",
-          marginTop: "4px"
-        }}>
-          <div style={{
-            width: percent + "%",
-            height: "100%",
-            background: "linear-gradient(90deg, #6366f1, #22c55e)",
-            transition: "0.5s"
-          }} />
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="container">
-      <div className="card">
+      <h1>🚀 ResumeForge AI</h1>
+      <p>Match your resume with real job descriptions</p>
 
-        <h1 className="title">🚀 ResumeForge AI</h1>
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
-        <p style={{ textAlign: "center", fontSize: "12px", color: "#6b7280" }}>
-          Powered by AI • Built by Himanshu
-        </p>
+      <textarea
+        placeholder="Paste Job Description here..."
+        value={jd}
+        onChange={(e) => setJd(e.target.value)}
+      />
 
-        <p className="subtitle">
-          Get recruiter-level feedback instantly
-        </p>
+      <button onClick={handleUpload}>
+        {loading ? "Analyzing..." : "Analyze Resume"}
+      </button>
 
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-        />
+      {result && (
+        <div className="result">
+          <h2>🎯 Match Score: {result.match_score}/100</h2>
 
-        <button onClick={handleUpload} disabled={loading}>
-          {loading ? "Analyzing Resume..." : "Analyze Resume"}
-        </button>
+          <h3>❌ Missing Skills</h3>
+          <ul>
+            {result.missing_skills?.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
 
-        {result && (
-          <div className="result">
+          <h3>✅ Strengths</h3>
+          <ul>
+            {result.strengths?.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
 
-            {/* SCORE */}
-            <div className="score-box">
-              <h2
-                className="score"
-                style={{ color: getScoreColor(result.score) }}
-              >
-                {result.score}/100
-              </h2>
-              <p>Overall Resume Score</p>
-            </div>
+          <h3>⚠ Weaknesses</h3>
+          <ul>
+            {result.weaknesses?.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
 
-            {/* PROGRESS BARS */}
-            <div>
-              <Progress label="Skills" value={result.score_breakdown.skills} max={30} />
-              <Progress label="Projects" value={result.score_breakdown.projects} max={30} />
-              <Progress label="Experience" value={result.score_breakdown.experience} max={20} />
-              <Progress label="Presentation" value={result.score_breakdown.presentation} max={20} />
-            </div>
-
-            {/* STRENGTHS */}
-            <div className="section">
-              <h3>✅ Strengths</h3>
-              <ul>
-                {result.strengths.map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* WEAKNESSES */}
-            <div className="section">
-              <h3>⚠ Weaknesses</h3>
-              <ul>
-                {result.weaknesses.map((w, i) => (
-                  <li key={i}>{w}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* SUGGESTIONS */}
-            <div className="section">
-              <h3>🚀 Suggestions</h3>
-              <ul>
-                {result.suggestions.map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ul>
-            </div>
-
-          </div>
-        )}
-
-      </div>
+          <h3>🚀 Suggestions</h3>
+          <ul>
+            {result.suggestions?.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
