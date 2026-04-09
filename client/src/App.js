@@ -27,8 +27,7 @@ function App() {
 
       const data = await res.json();
 
-      // 🔥 DEBUG (important)
-      console.log("API RESPONSE:", data);
+      console.log("API RESPONSE:", data); // 🔥 debug
 
       setResult(data);
       setLoading(false);
@@ -56,18 +55,17 @@ function App() {
           onChange={(e) => setJd(e.target.value)}
         />
 
-        <button onClick={handleUpload}>
+        {/* 🔥 FIXED BUTTON */}
+        <button onClick={handleUpload} disabled={loading}>
           {loading ? "Analyzing..." : "Analyze Resume"}
         </button>
 
         {result && (
           <div className="result">
+            {/* 🔥 FINAL SCORE FIX */}
             <h2>
               🎯 Match Score:{" "}
-              {result.match_score !== undefined
-                ? result.match_score
-                : "N/A"}
-              /100
+              {(result.match_score || result.score || "N/A")}/100
             </h2>
 
             <h3>❌ Missing Skills</h3>
