@@ -12,19 +12,28 @@ async function analyzeResume(text, jd) {
         {
           role: "user",
           content: `
-Act like a strict recruiter.
+You are a strict recruiter.
 
-Compare the resume with the given job description.
+Compare the resume with the job description.
 
-Return ONLY JSON:
+Return STRICT JSON ONLY. No explanation. No text outside JSON.
+
+Keys must be EXACTLY:
 
 {
-  "match_score": number,
+  "match_score": number (0-100),
   "missing_skills": [],
   "strengths": [],
   "weaknesses": [],
   "suggestions": []
 }
+
+Rules:
+- match_score must be realistic
+- missing_skills must list important missing technologies
+- strengths must highlight relevant skills
+- weaknesses must be honest
+- suggestions must be actionable
 
 Job Description:
 ${jd}
@@ -38,10 +47,57 @@ ${text}
 
     const raw = response.choices[0].message.content;
 
-    return JSON.parse(raw);
+    let parsed;
+
+    try {
+      parsed = JSON.parse(raw);
+    } catch (err) {
+      console.error("❌ JSON Parse Failed:", raw);
+
+      return {
+        match_score: 0,
+        missing_skills: [],
+        strengths: ["AI response parsing failed"],
+        weaknesses: ["Invalid AI format"],
+        suggestions: ["Try again"],
+      };
+    }
+
+    // 🔥 BULLETPROOF NORMALIZATION
+    return {
+      match_score:
+        parsed.match_score ||
+        parsed.score ||
+        parsed.rating ||
+        0,
+
+      missing_skills:
+        parsed.missing_skills ||
+        parsed.missing ||
+        [],
+
+      strengths:
+        parsed.strengths ||
+        [],
+
+      weaknesses:
+        parsed.weaknesses ||
+        [],
+
+      suggestions:
+        parsed.suggestions ||
+        [],
+    };
   } catch (error) {
-    console.error(error);
-    return { error: "AI processing failed" };
+    console.error("🔥 GROQ ERROR:", error);
+
+    return {
+      match_score: 0,
+      missing_skills: [],
+      strengths: [],
+      weaknesses: ["AI processing failed"],
+      suggestions: ["Retry after some time"],
+    };
   }
 }
 
