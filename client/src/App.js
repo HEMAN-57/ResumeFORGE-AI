@@ -29,10 +29,10 @@ function App() {
       console.log(data);
 
       setResult(data);
-      setLoading(false);
     } catch (err) {
+      alert("Something went wrong");
+    } finally {
       setLoading(false);
-      alert("Error");
     }
   };
 
@@ -55,65 +55,45 @@ function App() {
 
         {result && (
           <>
-            <div className="score-box">
-              <h2>🎯 {result.match_score}/100</h2>
-            </div>
+            <h2>🎯 {result.match_score ?? "N/A"}/100</h2>
 
-            <div className="section">
-              <h3>📊 Gap Analysis</h3>
-              <ul>
-                {(result.gap_analysis?.missing_core_skills || []).map((i, idx) => (
-                  <li key={idx}>❌ {i}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="section">
-              <h3>✅ Strengths</h3>
-              <ul>
-                {(result.strengths_detailed || []).map((i, idx) => (
-                  <li key={idx}>{i}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="section">
-              <h3>⚠ Weaknesses</h3>
-              <ul>
-                {(result.weaknesses_detailed || []).map((i, idx) => (
-                  <li key={idx}>{i}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="section">
-              <h3>🚀 Free Roadmap</h3>
-              {Object.entries(result.roadmap_free || {}).map(([k, v]) => (
-                <div key={k}>
-                  <h4>{k}</h4>
-                  {v.map((i, idx) => <p key={idx}>• {i}</p>)}
-                </div>
+            <h3>📊 Gap Analysis</h3>
+            <ul>
+              {(result.gap_analysis?.missing_core_skills || []).map((i, idx) => (
+                <li key={idx}>❌ {i}</li>
               ))}
-            </div>
+            </ul>
 
-            <div className="section">
-              <h3>💎 Premium Roadmap</h3>
-              {Object.entries(result.roadmap_premium || {}).map(([k, v]) => (
-                <div key={k}>
-                  <h4>{k}</h4>
-                  {v.map((i, idx) => <p key={idx}>• {i}</p>)}
-                </div>
+            <h3>✅ Strengths</h3>
+            <ul>
+              {(result.strengths_detailed || []).map((i, idx) => (
+                <li key={idx}>{i}</li>
               ))}
-            </div>
+            </ul>
 
-            <div className="section">
-              <h3>⚡ Priority Actions</h3>
-              <ul>
-                {(result.priority_actions || []).map((i, idx) => (
-                  <li key={idx}>🔥 {i}</li>
+            <h3>⚠ Weaknesses</h3>
+            <ul>
+              {(result.weaknesses_detailed || []).map((i, idx) => (
+                <li key={idx}>{i}</li>
+              ))}
+            </ul>
+
+            <h3>🚀 Free Roadmap</h3>
+            {Object.entries(result.roadmap_free || {}).map(([week, items]) => (
+              <div key={week}>
+                <h4>{week}</h4>
+                {(items || []).map((i, idx) => (
+                  <p key={idx}>• {i}</p>
                 ))}
-              </ul>
-            </div>
+              </div>
+            ))}
+
+            <h3>⚡ Priority Actions</h3>
+            <ul>
+              {(result.priority_actions || []).map((i, idx) => (
+                <li key={idx}>🔥 {i}</li>
+              ))}
+            </ul>
           </>
         )}
       </div>
